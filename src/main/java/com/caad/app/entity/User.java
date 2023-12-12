@@ -22,11 +22,13 @@ public class User implements Serializable {
 	@Column(length = 50, nullable = false)
 	private String name;
 
-	private String surname;
+	private String username;
 
 	private String email;
 
-	private Boolean enabled;
+	private Boolean userStatus;
+	
+	private String password;
 
 	public Long getId() {
 		return id;
@@ -44,12 +46,12 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	public String getSurname() {
-		return surname;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {
@@ -60,12 +62,22 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public Boolean getEnabled() {
-		return enabled;
+	public Boolean getUserStatus() {
+		return userStatus;
 	}
 
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
+	public void setUserStatus(Boolean enabled) {
+		this.userStatus = enabled;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 
 }
