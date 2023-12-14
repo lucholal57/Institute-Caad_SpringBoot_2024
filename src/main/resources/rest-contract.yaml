@@ -19,47 +19,159 @@ tags:
     description: Operaciones con Usuarios
 
 paths:  
+#Post usuario
   /users/user:
     post:
       tags:
         - user
-      summary: Create user
-      description: This can only be done by the logged in user.
+      summary: Creacion de usuario
+      description: Creacion de usuario
       operationId: createUser
       requestBody:
-        description: Created user object
+        description: Envio de objeto usuario por Schema
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDTO'
+              $ref: '#/components/schemas/UserSinIdDTO'
       responses:
-        default:
-          description: successful operation
+        '200':
+          description: Usuario creado con Exito!
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponseDTO'
-  
+
+#Get listado de usuarios
     get:
       tags:
         - user
-      summary: Get all users
-      description: ''
+      summary: Listar usuarios
+      description: Listar usuarios
       operationId: getAllUsers
       responses:
         '200':
-          description: successful operation
+          description:  Listado de usuarios OK!
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserListResponseDTO'
-        '404':
+        '400':
           description: Bad request
+
+#Get usuario por username
+  /users/user/: 
+    get:
+      tags:
+        - user
+      summary: Buscar usuario por username
+      description: Buscar usuario por username
+      operationId: getUsername
+      parameters: 
+        #En los parametros ponemos query tanto en name como en in que indica que el username va por query
+        #Es requerido y de tipo schema string
+        - name: query
+          in: query
+          description: Envio de username por query de tipo string
+          required: true
+          schema:
+            type: string
+      responses: 
+         '200':
+            description: Usuario encontrado con Exito!
+            content: 
+              application/json: 
+                schema: 
+                 $ref: '#/components/schemas/UserResponseDTO'
+
+#Get usuario por id
+  /users/user/{userId}: 
+    get:
+      tags:
+        - user
+      summary: Buscar usuario por id
+      description: Buscar usuario por id
+      operationId: getUserId
+      parameters: 
+        #En los parametros ponemos en name el nombre de la variable
+        #En in ponemos path que es donde va a ir la variable
+        #Es requerido y de tipo schema integer formato int64
+        - name: userId
+          in: path
+          description: Envio de id por path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses: 
+         '200':
+            description: Usuario encontrado con Exito!
+            content: 
+              application/json: 
+                schema: 
+                 $ref: '#/components/schemas/UserResponseDTO'
+
+    put:
+      tags:
+        - user
+      summary: Actualizar usuario por id
+      description: Actualizar usuario por id
+      operationId: updateUser
+      parameters: 
+        - name: userId
+          in: path
+          description: Envio de id por path
+          required: true
+          schema: 
+            type: integer
+            format: int64
+      requestBody: 
+        description: Cuerpo de del resquest en donde van los datos del usuario a actualizar
+        content: 
+          application/json: 
+            schema: 
+              $ref: '#/components/schemas/UserDTO'
+      responses: 
+        '200':
+          description: Actualizacion de usuario con Exito!
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/UserResponseDTO'
+        '400':
+          description: Bad Request
+
+    delete:
+      tags:
+        - user
+      summary: Borrar usuario por id
+      description: Borrar usuario por id
+      operationId: deleteUser
+      parameters: 
+        - name: userId
+          in: path
+          description: Envio de id por path
+          required: true
+          schema: 
+            type: integer
+            format: int64
+      responses: 
+        '200':
+          description: Eliminacion de usuario con Exito!
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/UserResponseDTO'
+        '400':
+          description: Bad Request
+
+
+
+    
         
 
 components:
   schemas:
-    
+    #Esquema usuario objeto completo
     UserDTO:
       type: object
       properties:
@@ -90,13 +202,43 @@ components:
         - username
         - password
         - userStatus
-
+        
+    #Esquema usuario objeto pero sin id para el post   
+    UserSinIdDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: theUser
+        username:
+          type: string
+          example: John
+        email:
+          type: string
+          format: email
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+        userStatus:
+          type: boolean
+          description: User Status
+          format: int32
+          example: 1
+      required:
+        - name
+        - username
+        - password
+        - userStatus
+    
+    #Esquema listado de usuarios de tipo UserDTO
     UserListDTO:
        type: array
        items:
         $ref: '#/components/schemas/UserDTO'
         
-        
+
+    #Respuesta de tipo listado de objetos usuarios   
     UserListResponseDTO:
        type: object
        properties:
@@ -105,7 +247,7 @@ components:
           items:
             $ref: "#/components/schemas/UserDTO"
         
-      
+    #Respuesta de tipo objeto usuario
     UserResponseDTO:
       type: object
       properties:
